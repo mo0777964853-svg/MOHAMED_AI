@@ -5,75 +5,69 @@ from groq import Groq
 GROQ_API_KEY = "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"
 client = Groq(api_key=GROQ_API_KEY)
 
-# --- 1. SET PAGE CONFIG ---
+# --- 1. SET PAGE CONFIG (Inasaidia Responsive Layout) ---
 st.set_page_config(page_title="MOHAMED_AI", page_icon="🤖", layout="wide")
 
-# --- 2. HTML & CSS INJECTION (MUONEKANO ANGAVU) ---
+# --- 2. CSS KWA AJILI YA RANGI NA MULTIPLE DEVICES ---
 st.markdown("""
     <style>
-    /* Background ya App (Rangi Angavu/Light Mode) */
+    /* Background angavu */
     .stApp {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        color: #2d3436;
+        background-color: #f8f9fa;
+        color: #000000;
     }
 
-    /* Kichwa cha Habari */
+    /* Maandishi yawe meusi kwenye mfumo mzima */
+    html, body, [class*="st-"] {
+        color: #000000 !important;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* Kichwa cha Habari - Responsive Font Size */
     .header-container {
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 1.5rem;
         text-align: center;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        padding: 20px;
+        background: white;
+        border-bottom: 2px solid #6a11cb;
+        margin-bottom: 20px;
     }
 
     .header-title {
-        background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-size: 45px;
+        font-size: clamp(24px, 5vw, 45px); /* Inajirekebisha kulingana na kioo */
         font-weight: 800;
-        letter-spacing: 1px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #6a11cb;
     }
 
-    /* Chat Messages Styles */
-    .stChatMessage {
-        border-radius: 15px !important;
-        padding: 15px !important;
-        margin-bottom: 12px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-    }
-
-    /* Ujumbe wa User */
-    [data-testid="stChatMessage"]:nth-child(even) {
+    /* Chat Bubbles - Responsive Width */
+    [data-testid="stChatMessage"] {
+        max-width: 90%; /* Kwenye simu inachukua nafasi kubwa */
+        margin: auto;
+        margin-bottom: 15px;
+        border-radius: 15px;
         background-color: #ffffff !important;
-        border: 1px solid #e0e0e0 !important;
-        color: #2d3436 !important;
+        border: 1px solid #dee2e6 !important;
     }
 
-    /* Ujumbe wa AI */
-    [data-testid="stChatMessage"]:nth-child(odd) {
-        background-color: #e3f2fd !important;
-        border: 1px solid #bbdefb !important;
-        color: #1565c0 !important;
+    /* Kwenye Screen kubwa (PC) fanya chat iwe katikati */
+    @media (min-width: 768px) {
+        [data-testid="stChatMessage"] {
+            max-width: 70%;
+        }
     }
 
-    /* Input Bar */
+    /* Rangi ya maandishi ndani ya majibu ya AI na User */
+    .stMarkdown p {
+        color: #000000 !important;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    /* Input box iwe wazi na ionekane vizuri */
     .stChatInputContainer {
-        border-radius: 30px !important;
-        background: white !important;
-        box-shadow: 0 -2px 10px rgba(0,0,0,0.05) !important;
-    }
-
-    /* Sidebar Styling */
-    section[data-testid="stSidebar"] {
+        border-top: 1px solid #ddd !important;
         background-color: white !important;
-        border-right: 1px solid #eee;
     }
-
+    
     /* Hide Streamlit elements */
     header {visibility: hidden;}
     footer {visibility: hidden;}
@@ -81,7 +75,7 @@ st.markdown("""
 
     <div class="header-container">
         <div class="header-title">MOHAMED_AI</div>
-        <p style="color: #636e72; font-weight: 500;">Msaidizi Wako wa Akili ya Artificial</p>
+        <p style="color: #444;">Msaidizi Mahiri kwa Kila Kifaa</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -91,23 +85,21 @@ if "messages" not in st.session_state:
 
 # Sidebar
 with st.sidebar:
-    st.markdown("<h2 style='color: #2575fc;'>Dashboard</h2>", unsafe_allow_html=True)
-    st.write("Mfumo: **MOHAMED_AI**")
-    st.write("Hali: **Online**")
-    if st.button("🗑️ Futa Maongezi"):
+    st.title("⚙️ Mipangilio")
+    if st.button("Futa Chat"):
         st.session_state.messages = []
         st.rerun()
 
-# Display messages
+# Onyesha Historia (Display messages)
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+        st.markdown(f'<div style="color: black;">{message["content"]}</div>', unsafe_allow_html=True)
 
 # User Input
-if prompt := st.chat_input("Andika hapa..."):
+if prompt := st.chat_input("Andika swali lako hapa..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
-        st.markdown(prompt)
+        st.markdown(f'<div style="color: black;">{prompt}</div>', unsafe_allow_html=True)
 
     # Response Generation
     with st.chat_message("assistant"):
@@ -118,7 +110,7 @@ if prompt := st.chat_input("Andika hapa..."):
             completion = client.chat.completions.create(
                 model="llama-3.3-70b-versatile",
                 messages=[
-                    {"role": "system", "content": "Wewe ni MOHAMED_AI, msaidizi mwerevu na mwenye heshima. Jibu maswali kwa usahihi."},
+                    {"role": "system", "content": "Wewe ni MOHAMED_AI. Jibu maswali yote kwa lugha ya mtumiaji. Hakikisha majibu yako ni meusi na rahisi kusomeka."},
                     *[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
                 ],
                 stream=True,
@@ -127,10 +119,10 @@ if prompt := st.chat_input("Andika hapa..."):
             for chunk in completion:
                 if chunk.choices[0].delta.content is not None:
                     full_response += chunk.choices[0].delta.content
-                    message_placeholder.markdown(full_response + " ▌")
+                    message_placeholder.markdown(f'<div style="color: black;">{full_response} ▌</div>', unsafe_allow_html=True)
             
-            message_placeholder.markdown(full_response)
+            message_placeholder.markdown(f'<div style="color: black;">{full_response}</div>', unsafe_allow_html=True)
         except Exception as e:
-            st.error(f"Kuna tatizo: {e}")
+            st.error("Samahani, kuna tatizo la muunganisho.")
 
     st.session_state.messages.append({"role": "assistant", "content": full_response})
